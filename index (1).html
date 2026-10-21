@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>동동봇 홈페이지</title>
+
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+ margin:0;min-height:100vh;overflow-x:hidden;isolation:isolate;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+ color:#202238;
+ background:
+ radial-gradient(circle at 12% 18%,rgba(126,110,255,.30),transparent 25%),
+ radial-gradient(circle at 80% 16%,rgba(75,207,255,.27),transparent 25%),
+ radial-gradient(circle at 65% 78%,rgba(217,136,255,.22),transparent 29%),
+ radial-gradient(circle at 20% 82%,rgba(104,229,214,.18),transparent 24%),
+ linear-gradient(135deg,#edf5ff 0%,#f6efff 34%,#ecfbff 66%,#f7efff 100%);
+ background-size:145% 145%,165% 165%,155% 155%,170% 170%,220% 220%;
+ 
+}
+@keyframes liquidBg{
+ 0%{background-position:5% 20%,90% 10%,55% 85%,10% 90%,0% 50%}
+ 25%{background-position:18% 8%,72% 18%,68% 72%,18% 72%,35% 35%}
+ 50%{background-position:30% 22%,55% 35%,82% 58%,30% 55%,70% 20%}
+ 75%{background-position:16% 45%,78% 42%,60% 35%,48% 78%,45% 70%}
+ 100%{background-position:5% 20%,90% 10%,55% 85%,10% 90%,0% 50%}
+}
+input[type="radio"],#agree-checkbox{display:none}
+.text-container{
+ position:fixed!important;top:0!important;left:0!important;z-index:1000;
+ width:100%;min-height:72px;padding:13px max(18px,calc((100vw - 1120px)/2));
+ display:flex;align-items:center;justify-content:space-between;gap:14px;
+ background:rgba(255,255,255,.44);
+ border-bottom:1px solid rgba(255,255,255,.42);
+ backdrop-filter:blur(30px) saturate(165%);
+ -webkit-backdrop-filter:blur(30px) saturate(165%);
+}
+h1{margin:0;font-size:25px;font-weight:850;letter-spacing:-.7px;color:#202238}
+#title-feature,#title-install{display:none}
+#view-feature:checked~.text-container #title-home,
+#view-install:checked~.text-container #title-home{display:none}
+#view-feature:checked~.text-container #title-feature,
+#view-install:checked~.text-container #title-install{display:inline}
+#view-feature:checked~.text-container .back-btn,
+#view-install:checked~.text-container .back-btn{display:inline-block}
+.back-btn{
+ display:none;padding:9px 16px;border-radius:999px;
+ border:1px solid rgba(80,70,160,.12);background:rgba(255,255,255,.7);
+ color:#4d43a1;font-size:13px;font-weight:750;cursor:pointer
+}
+main{
+ position:relative;z-index:5;width:min(1120px,calc(100% - 32px));
+ margin:0 auto;padding:108px 0 80px
+}
+#home-view,#feature-view,#install-view{display:none}
+#home-view{display:block}
+#view-feature:checked~main #home-view,
+#view-install:checked~main #home-view{display:none}
+#view-feature:checked~main #feature-view{display:block}
+#view-install:checked~main #install-view{display:block}
+.hero{
+ position:relative;overflow:hidden;margin-bottom:20px;padding:42px 40px;
+ border-radius:30px;color:white;
+ background:
+ radial-gradient(circle at 82% 18%,rgba(255,255,255,.22),transparent 28%),
+ radial-gradient(circle at 20% 86%,rgba(255,255,255,.12),transparent 32%),
+ linear-gradient(135deg,rgba(80,69,201,.78),rgba(109,91,231,.62),rgba(76,155,232,.58));
+ border:1px solid rgba(255,255,255,.2);
+ backdrop-filter:blur(28px) saturate(150%);
+ -webkit-backdrop-filter:blur(28px) saturate(150%);
+ box-shadow:0 24px 60px rgba(70,58,160,.18)
+}
+.hero:after{
+ content:"DB";position:absolute;right:24px;bottom:-48px;
+ font-size:165px;line-height:1;font-weight:950;
+ color:rgba(255,255,255,.065);transform:rotate(-8deg);pointer-events:none
+}
+.hero-badge{
+ display:inline-flex;align-items:center;padding:7px 13px;border-radius:999px;
+ background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);
+ font-size:12px;font-weight:750;letter-spacing:.2px
+}
+.hero h2{
+ position:relative;z-index:2;margin:17px 0 0;
+ font-size:clamp(31px,5vw,51px);line-height:1.08;letter-spacing:-1.9px
+}
+.hero p{
+ position:relative;z-index:2;max-width:650px;margin:17px 0 0;
+ color:rgba(255,255,255,.88);line-height:1.75;font-size:15px
+}
+.hero-actions{position:relative;z-index:3;display:flex;flex-wrap:wrap;gap:10px;margin-top:25px}
+.hero-btn{
+ display:inline-flex;align-items:center;justify-content:center;padding:12px 19px;
+ border-radius:999px;font-size:13px;font-weight:800;cursor:pointer;
+ transition:transform .18s ease
+}
+.hero-btn.primary{background:rgba(255,255,255,.65);color:#4d42a1}
+.hero-btn.secondary{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:white}
+.hero-btn:hover{transform:translateY(-2px)}
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.quick-card,section,.category{
+ border:1px solid rgba(255,255,255,.42);
+ background:linear-gradient(135deg,rgba(255,255,255,.34),rgba(255,255,255,.16));
+ backdrop-filter:blur(30px) saturate(145%);
+ -webkit-backdrop-filter:blur(30px) saturate(145%);
+ border-radius:22px;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.65),
+ inset 0 -1px 0 rgba(255,255,255,.18),
+ 0 12px 35px rgba(54,45,120,.07)
+}
+.quick-card{position:relative;overflow:hidden;padding:20px;border-radius:20px}
+.quick-card:before{
+ content:"";position:absolute;top:0;left:0;width:100%;height:3px;
+ background:linear-gradient(90deg,#6254d8,#6fbde8);opacity:.75
+}
+.quick-card strong{display:block;margin-top:9px;font-size:15px}
+.quick-number{font-size:12px;font-weight:850;color:#6255c9;letter-spacing:1px}
+.quick-card span{display:block;margin-top:5px;color:#6b6f82;font-size:12px;line-height:1.55}
+section{margin-bottom:17px;padding:25px 27px;transition:box-shadow .18s,border-color .18s}
+section:hover{box-shadow:0 18px 42px rgba(54,45,120,.1);border-color:rgba(94,80,200,.18)}
+section h2{margin:0 0 10px;font-size:21px;letter-spacing:-.5px}
+section p{margin:0;font-size:14px;line-height:1.8;color:#55596c}
+.clickable{display:block;color:inherit;text-decoration:none;cursor:pointer}
+.clickable section{height:100%}
+.hint{
+ display:inline-flex;margin-top:14px;padding:7px 11px;border-radius:999px;
+ background:rgba(240,239,255,.8);color:#5145ad;font-size:12px;font-weight:750
+}
+.kakao-link-btn{
+ display:inline-flex;align-items:center;justify-content:center;gap:8px;
+ padding:11px 17px;background:#FEE500;color:#3C1E1E;
+ font-size:13px;font-weight:800;border-radius:999px;text-decoration:none;
+ transition:transform .18s ease,filter .18s ease
+}
+.kakao-link-btn.alt{background:#3C1E1E;color:#FEE500}
+.kakao-link-btn.alt svg path{fill:#FEE500}
+.kakao-link-btn:hover{transform:translateY(-2px);filter:brightness(.97)}
+.kakao-ico{width:18px;height:18px;flex-shrink:0}
+.contact-buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.kakao-badge{
+ display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;
+ margin-right:7px;border-radius:10px;background:#FEE500;vertical-align:middle
+}
+.kakao-badge svg{width:20px;height:20px}
+.category{margin-bottom:14px;padding:20px}
+.category h3{margin:0 0 12px;font-size:16px;letter-spacing:-.3px}
+.category>p{margin:0;color:#5e6172;font-size:13px;line-height:1.75}
+.cmd-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.cmd-item{
+ display:flex;align-items:baseline;flex-wrap:wrap;gap:7px;min-height:45px;
+ padding:10px 12px;background:rgba(255,255,255,.24);
+ border:1px solid rgba(255,255,255,.36);border-radius:12px;font-size:13px
+}
+.cmd-code{font-family:Consolas,"Noto Sans KR",monospace;font-weight:800;color:#5145ad;white-space:nowrap}
+.cmd-desc{color:#606477}
+.terms-box{
+ max-height:380px;overflow-y:auto;padding:18px;background:rgba(255,255,255,.3);
+ border:1px solid rgba(255,255,255,.4);border-radius:16px;
+ font-size:13px;line-height:1.7;color:#55596c
+}
+.terms-box p{margin:0 0 10px}
+.terms-title{margin:0 0 16px!important;color:#252840!important;font-size:16px!important;font-weight:850}
+.terms-section{margin-bottom:22px}
+.terms-section:last-child{margin-bottom:0}
+.terms-heading{
+ margin:0 0 10px!important;padding-bottom:7px;
+ border-bottom:2px solid rgba(81,69,173,.12);
+ color:#5145ad!important;font-size:14px!important;font-weight:850
+}
+.pledge-list{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.pledge-list li{
+ position:relative;padding:8px 12px 8px 33px;background:rgba(255,255,255,.18);
+ border:1px solid rgba(255,255,255,.3);border-radius:9px;font-size:13px
+}
+.pledge-list li:before{
+ content:"\2713";position:absolute;left:10px;top:50%;transform:translateY(-50%);
+ color:#5145ad;font-size:10px;font-weight:900
+}
+.rule-card{margin-bottom:9px;padding:12px 14px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:11px}
+.rule-card:last-child{margin-bottom:0}
+.rule-title{margin:0 0 6px;color:#252840;font-weight:800}
+.rule-title .num{
+ display:inline-flex;align-items:center;justify-content:center;
+ width:22px;height:22px;margin-right:8px;border-radius:50%;
+ background:#5145ad;color:white;font-size:11px
+}
+.rule-card ul{margin:0;padding-left:20px}
+.rule-card li{margin-bottom:3px;font-size:13px}
+.rule-card li:last-child{margin-bottom:0}
+.time-table{width:100%;border-collapse:collapse;overflow:hidden;background:rgba(255,255,255,.2);border-radius:12px;font-size:13px}
+.time-table th,.time-table td{padding:10px 14px;text-align:left;background:rgba(255,255,255,.13)}
+.time-table th{width:42%;color:#44465a}
+.time-table tr+tr th,.time-table tr+tr td{border-top:1px solid rgba(0,0,0,.06)}
+.time-table td{color:#5145ad;font-weight:800}
+.terms-note{margin:10px 0 0!important;color:#777b8b!important;font-size:12px!important}
+.agree-label{
+ display:flex;align-items:center;gap:10px;margin:38px 0 28px;padding:4px 0;
+ color:#303247;font-size:14px;font-weight:700;cursor:pointer
+}
+.fake-checkbox{
+ display:inline-flex;align-items:center;justify-content:center;width:23px;height:23px;
+ flex-shrink:0;border:2px solid rgba(110,105,150,.42);border-radius:7px;
+ background:rgba(255,255,255,.3);color:transparent;font-size:11px;font-weight:900
+}
+#agree-checkbox:checked~section .fake-checkbox{background:#5145ad;border-color:#5145ad;color:white}
+.install-form{opacity:.42;pointer-events:none;transition:opacity .2s ease}
+#agree-checkbox:checked~section .install-form{opacity:1;pointer-events:auto}
+.field-label{display:block;margin:0 0 7px;color:#303247;font-size:13px;font-weight:800}
+.install-form input[type="text"],.flow-input{
+ display:block;width:100%;margin-bottom:15px;padding:12px 14px;outline:none;
+ border:1px solid rgba(255,255,255,.65);border-radius:12px;
+ background:rgba(255,255,255,.24);color:#202238;font-size:14px
+}
+.install-form input[type="text"]:focus,.flow-input:focus{
+ border-color:#7568d6;box-shadow:0 0 0 4px rgba(117,104,214,.1)
+}
+.submit-btn,.flow-submit{
+ display:inline-flex;align-items:center;justify-content:center;
+ padding:12px 20px;border:0;border-radius:999px;background:#5145ad;color:white;
+ font-family:inherit;font-size:14px;font-weight:850;text-decoration:none;cursor:pointer;
+ box-shadow:0 10px 24px rgba(81,69,173,.22);transition:transform .18s,background .18s
+}
+.submit-btn:hover,.flow-submit:hover{transform:translateY(-2px);background:#463a9d}
+.form-note,.flow-note{margin-top:10px!important;color:#777b8b!important;font-size:12px!important;line-height:1.7!important}
+.install-options{display:grid;gap:12px;margin-bottom:18px}
+.install-option{
+ display:flex;align-items:center;gap:14px;width:100%;padding:18px 20px;
+ text-align:left;color:#252840;border:1px solid rgba(255,255,255,.55);
+ border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.42),rgba(255,255,255,.17));
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.65),0 12px 32px rgba(67,57,145,.07);
+ backdrop-filter:blur(28px) saturate(150%);-webkit-backdrop-filter:blur(28px) saturate(150%);
+ cursor:pointer;transition:transform .18s,background .18s;font-family:inherit
+}
+.install-option:hover{transform:translateY(-2px);background:rgba(255,255,255,.55)}
+.option-icon{
+ display:flex;align-items:center;justify-content:center;flex:0 0 44px;
+ width:44px;height:44px;border-radius:14px;background:rgba(111,98,220,.12);font-size:22px
+}
+.option-copy{display:flex;flex:1;flex-direction:column;gap:5px}
+.option-copy strong{font-size:16px;font-weight:850}
+.option-copy small{font-size:12px;line-height:1.5;color:#686c7f}
+.option-arrow{font-size:28px;color:#7166c7}
+.install-subview{display:none}
+.subview-back{
+ display:inline-flex;align-items:center;margin:0 0 14px;padding:9px 14px;
+ border:1px solid rgba(255,255,255,.55);border-radius:999px;
+ background:rgba(255,255,255,.35);color:#5145ad;font-family:inherit;
+ font-size:13px;font-weight:800;cursor:pointer
+}
+.site-footer{position:relative;z-index:1;padding:26px 10px 35px;text-align:center;color:#85899a;font-size:12px}
+
+/* 계정 / 요금제 / 취소 UI */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.account-status{max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:#5145ad;font-weight:750}
+.account-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(81,69,173,.18);border-radius:999px;padding:9px 14px;background:rgba(255,255,255,.75);color:#5145ad;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.account-btn.kakao{background:#FEE500;color:#3C1E1E;border-color:#FEE500}
+.account-btn .kakao-ico{width:15px;height:15px}
+.plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0 20px}
+.plan-card{position:relative;display:block;width:100%;padding:20px;text-align:left;border:1px solid rgba(255,255,255,.7);border-radius:18px;background:rgba(255,255,255,.32);color:#252840;cursor:pointer;font-family:inherit;box-shadow:0 10px 28px rgba(67,57,145,.06);transition:.18s}
+.plan-card:hover,.plan-card.selected{border-color:#7568d6;background:rgba(255,255,255,.64);box-shadow:0 0 0 3px rgba(117,104,214,.12)}
+.plan-card .plan-name{display:block;font-size:15px;font-weight:850;margin-bottom:9px}
+.plan-card .plan-price{display:block;font-size:25px;font-weight:900;color:#5145ad;letter-spacing:-.7px}
+.plan-card .plan-price small{font-size:12px;letter-spacing:0}
+.plan-card .plan-desc{display:block;margin-top:8px;color:#666a7e;font-size:12px;line-height:1.6}
+.plan-note{margin:0 0 18px!important;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.32);font-size:12px!important;color:#696d7e!important;line-height:1.7!important}
+.cancel-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0}
+.cancel-choice{padding:15px 12px;border:1px solid rgba(255,255,255,.65);border-radius:14px;background:rgba(255,255,255,.28);font:800 13px inherit;color:#34354d;cursor:pointer}
+.cancel-choice.selected{border-color:#7568d6;background:rgba(255,255,255,.65);box-shadow:0 0 0 3px rgba(117,104,214,.1);color:#5145ad}
+.install-form .submit-btn:disabled,.flow-submit:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+/* 로그인 모달 (카카오 전용) */
+.auth-overlay{position:fixed;inset:0;z-index:5000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(24,25,48,.38);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:auto}
+.auth-overlay[hidden],[hidden]{display:none!important}
+.auth-card{position:relative;width:min(100%,420px);padding:28px 26px;border-radius:24px;background:rgba(250,250,255,.95);border:1px solid rgba(255,255,255,.8);box-shadow:0 30px 90px rgba(30,25,90,.24);color:#252840}
+.auth-close{position:absolute;right:16px;top:14px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(90,80,150,.09);color:#5145ad;font-size:23px;cursor:pointer}
+.auth-title{margin:4px 44px 8px 0;font-size:24px;font-weight:900;letter-spacing:-.7px}
+.auth-subtitle{margin:0 0 22px;color:#686c7f;font-size:13px;line-height:1.65}
+.kakao-login-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px 16px;border:0;border-radius:12px;background:#FEE500;color:#191919;font-family:inherit;font-size:15px;font-weight:850;cursor:pointer;transition:filter .18s,transform .18s}
+.kakao-login-btn:hover{filter:brightness(.96);transform:translateY(-1px)}
+.kakao-login-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.kakao-login-btn .kakao-ico{width:22px;height:22px}
+.auth-message{min-height:18px;margin:14px 0 0;font-size:12px;line-height:1.6;color:#5145ad;overflow-wrap:anywhere}
+.auth-small{margin:10px 0 0;color:#777b8b;font-size:11px;line-height:1.6}
+
+/* ===== 물결 배경 · 은은한 유리 · 움직이는 오브젝트 (가볍게) ===== */
+.bg-fx{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:linear-gradient(135deg,#eef3ff 0%,#f6efff 48%,#e9faff 100%)}
+.bg-fx span{position:absolute;border-radius:50%;will-change:transform,opacity}
+.bg-fx .b1{width:72vmax;height:72vmax;left:-24vmax;top:-28vmax;background:radial-gradient(circle,rgba(150,136,255,.7),rgba(150,136,255,0) 66%);animation:w1 26s ease-in-out infinite alternate,br 13s ease-in-out infinite alternate}
+.bg-fx .b2{width:66vmax;height:66vmax;right:-26vmax;top:-10vmax;background:radial-gradient(circle,rgba(90,200,255,.62),rgba(90,200,255,0) 66%);animation:w2 31s ease-in-out infinite alternate,br 17s ease-in-out -5s infinite alternate}
+.bg-fx .b3{width:70vmax;height:70vmax;left:-6vmax;bottom:-34vmax;background:radial-gradient(circle,rgba(230,140,255,.62),rgba(230,140,255,0) 66%);animation:w3 29s ease-in-out infinite alternate,br 15s ease-in-out -9s infinite alternate}
+.bg-fx .b4{width:60vmax;height:60vmax;right:-20vmax;bottom:-26vmax;background:radial-gradient(circle,rgba(100,236,210,.58),rgba(100,236,210,0) 66%);animation:w4 34s ease-in-out infinite alternate,br 19s ease-in-out -3s infinite alternate}
+.bg-fx .b5{width:52vmax;height:52vmax;left:28vmax;top:10vmax;background:radial-gradient(circle,rgba(255,170,222,.5),rgba(255,170,222,0) 66%);animation:w5 37s ease-in-out infinite alternate,br 21s ease-in-out -11s infinite alternate}
+.bg-fx .b6{width:56vmax;height:56vmax;left:-14vmax;top:22vmax;background:radial-gradient(circle,rgba(120,160,255,.55),rgba(120,160,255,0) 66%);animation:w6 33s ease-in-out infinite alternate,br 16s ease-in-out -7s infinite alternate}
+@keyframes w1{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(24vw,14vh,0) scale(1.18)}100%{transform:translate3d(8vw,36vh,0) scale(.96)}}
+@keyframes w2{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-26vw,24vh,0) scale(1.15)}100%{transform:translate3d(-8vw,44vh,0) scale(.92)}}
+@keyframes w3{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(24vw,-20vh,0) scale(1.2)}100%{transform:translate3d(-12vw,-38vh,0) scale(1)}}
+@keyframes w4{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-24vw,-22vh,0) scale(1.22)}100%{transform:translate3d(8vw,-36vh,0) scale(.98)}}
+@keyframes w5{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-20vw,18vh,0) scale(1.3)}100%{transform:translate3d(18vw,-10vh,0) scale(.9)}}
+@keyframes w6{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(26vw,-12vh,0) scale(1.2)}100%{transform:translate3d(12vw,22vh,0) scale(.94)}}
+@keyframes br{from{opacity:.5}to{opacity:1}}
+
+.fo{position:absolute;left:var(--x);bottom:-120px;width:var(--s);height:var(--s);opacity:0;color:#a99cff;will-change:transform,opacity;animation:bubbleUp var(--d) linear var(--dl) infinite,tint var(--t) ease-in-out infinite alternate}
+i.fo{border-radius:50%;background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.95),currentColor 62%,rgba(255,255,255,.1) 76%);border:1px solid rgba(255,255,255,.8)}
+@keyframes tint{0%{color:#a99cff}34%{color:#7fd6ff}67%{color:#f2a2ff}100%{color:#7ff0d6}}
+@keyframes bubbleUp{0%{transform:translate3d(0,0,0) rotate(0);opacity:0}10%{opacity:.7}50%{transform:translate3d(30px,-60vh,0) rotate(16deg)}90%{opacity:.7}100%{transform:translate3d(-24px,-125vh,0) rotate(-14deg);opacity:0}}
+@keyframes flow{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+
+/* 앞쪽 유리: 연하고 여리게 */
+.quick-card,section,.category,.rec-card{
+ background:linear-gradient(135deg,rgba(255,255,255,.58),rgba(255,255,255,.3));
+ border:1px solid rgba(255,255,255,.78);
+ backdrop-filter:blur(14px) saturate(135%);-webkit-backdrop-filter:blur(14px) saturate(135%);
+ box-shadow:0 8px 26px rgba(80,70,160,.09),inset 0 1px 0 rgba(255,255,255,.9)
+}
+.hero{
+ color:#2b2a5c;
+ background:radial-gradient(circle at 86% 14%,rgba(255,255,255,.6),transparent 40%),linear-gradient(135deg,rgba(255,255,255,.62),rgba(238,232,255,.46),rgba(222,244,255,.5));
+ border:1px solid rgba(255,255,255,.85);
+ backdrop-filter:blur(14px) saturate(135%);-webkit-backdrop-filter:blur(14px) saturate(135%);
+ box-shadow:0 16px 46px rgba(80,70,160,.12),inset 0 1px 0 rgba(255,255,255,.95)
+}
+.hero:after{color:rgba(110,100,220,.07)}
+.hero-badge{background:rgba(110,100,220,.12);border:1px solid rgba(110,100,220,.18);color:#4d43a1}
+.hero h2{color:#2b2a5c}
+.hero p{color:#5a5e7c}
+.hero-btn.primary{background:linear-gradient(120deg,#5145ad,#6d5be7,#3f8fe0,#9a5be0,#5145ad);background-size:300% 100%;color:#fff;box-shadow:0 8px 20px rgba(81,69,173,.22);animation:flow 10s ease-in-out infinite alternate}
+.hero-btn.secondary{background:rgba(255,255,255,.62);border:1px solid rgba(110,100,220,.2);color:#4d43a1}
+.quick-card:before{background:linear-gradient(90deg,#8f84ff,#7fd6ff,#f2a2ff,#8f84ff);background-size:300% 100%;animation:flow 9s ease-in-out infinite alternate;opacity:.85}
+.submit-btn,.flow-submit,.submit-btn:hover,.flow-submit:hover{background:linear-gradient(120deg,#5145ad,#6d5be7,#3f8fe0,#9a5be0,#5145ad);background-size:300% 100%;animation:flow 10s ease-in-out infinite alternate}
+.submit-btn:hover,.flow-submit:hover{filter:brightness(.94)}
+.install-option,.plan-card{box-shadow:0 8px 24px rgba(80,70,160,.1),inset 0 1px 0 rgba(255,255,255,.85)}
+
+/* 카카오톡 채팅 데모 (히어로) */
+.chat-demo{position:absolute;right:34px;top:50%;transform:translateY(-50%);width:290px;z-index:3;display:flex;flex-direction:column;gap:9px}
+.cb{max-width:90%;padding:9px 13px;border-radius:16px;font-size:13px;line-height:1.5;font-weight:700;opacity:0;box-shadow:0 4px 12px rgba(80,70,160,.12)}
+.cb.me{align-self:flex-end;background:#FEE500;color:#3C1E1E;border-bottom-right-radius:5px}
+.cb.bot{align-self:flex-start;background:rgba(255,255,255,.95);color:#2b2a5c;border-bottom-left-radius:5px}
+.cb.c1{animation:cb1 14s ease-in-out infinite}
+.cb.c2{animation:cb2 14s ease-in-out infinite}
+.cb.c3{animation:cb3 14s ease-in-out infinite}
+.cb.c4{animation:cb4 14s ease-in-out infinite}
+@keyframes cb1{0%,3%{opacity:0;transform:translateY(10px) scale(.95)}7%,90%{opacity:1;transform:none}96%,100%{opacity:0;transform:translateY(-4px)}}
+@keyframes cb2{0%,20%{opacity:0;transform:translateY(10px) scale(.95)}24%,90%{opacity:1;transform:none}96%,100%{opacity:0;transform:translateY(-4px)}}
+@keyframes cb3{0%,38%{opacity:0;transform:translateY(10px) scale(.95)}42%,90%{opacity:1;transform:none}96%,100%{opacity:0;transform:translateY(-4px)}}
+@keyframes cb4{0%,56%{opacity:0;transform:translateY(10px) scale(.95)}60%,90%{opacity:1;transform:none}96%,100%{opacity:0;transform:translateY(-4px)}}
+
+.kakao-switch-btn{display:block;width:100%;margin-top:10px;padding:11px 14px;border:1px solid rgba(95,90,150,.22);border-radius:12px;background:rgba(255,255,255,.7);color:#4d43a1;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.kakao-switch-btn:disabled{opacity:.55;cursor:not-allowed}
+
+@media(min-width:761px){.quick-card{animation:floaty 8s ease-in-out infinite}.quick-card:nth-child(2){animation-delay:-2.6s}.quick-card:nth-child(3){animation-delay:-5.2s}}
+@media(max-width:900px){.chat-demo{position:static;transform:none;width:100%;max-width:340px;margin-top:22px}}
+/* 모바일: 무거운 블러를 끄고 가볍게 */
+@media(max-width:760px){
+ .quick-card,section,.category,.rec-card,.hero,.install-option,.text-container{backdrop-filter:none;-webkit-backdrop-filter:none}
+ .quick-card,section,.category,.rec-card{background:rgba(255,255,255,.66)}
+ .hero{background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(238,232,255,.62))}
+ .text-container{background:rgba(255,255,255,.78)}
+ .fo:nth-child(n+11){display:none}
+}
+
+/* 봇 설치 및 관리 기록 */
+.rec-card{margin-bottom:10px;padding:14px 16px;border-radius:16px;font-size:13px;line-height:1.7;color:#4b4f63;overflow-wrap:anywhere}
+.rec-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.rec-type{font-weight:850;color:#252840;font-size:14px}
+.rec-status{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;background:rgba(81,69,173,.12);color:#5145ad}
+.rec-status.st-done{background:rgba(34,160,107,.15);color:#17794f}
+.rec-status.st-rejected{background:rgba(220,60,60,.13);color:#b42318}
+.rec-status.st-processing{background:rgba(230,150,30,.16);color:#9a5b00}
+.rec-time{margin:6px 0;font-weight:800;color:#5145ad}
+.rec-line b{color:#303247}
+.rec-id{margin-top:4px;font-size:11px;color:#8a8ea0}
+
+/* 신청 상태 · 대화 · 관리 메뉴 */
+.rec-right{display:flex;align-items:center;gap:6px}
+.st-line{margin-top:4px;font-size:12px;font-weight:800;line-height:1.6}
+.st-ok{color:#2fa84f}
+.st-cancel{color:#e03131}
+.ok-ico{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin-right:4px;border:1.5px solid #2fa84f;border-radius:50%;font-size:10px;line-height:1;vertical-align:-2px}
+.rec-who{margin:4px 0;color:#303247}
+.ban-tag{margin-left:6px;padding:1px 8px;border-radius:999px;background:rgba(220,60,60,.14);color:#b42318;font-size:11px;font-weight:800}
+.rec-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.mini-btn{padding:6px 12px;border:1px solid rgba(95,90,150,.2);border-radius:999px;background:rgba(255,255,255,.7);color:#4d43a1;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.mini-btn.ok{border-color:rgba(47,168,79,.4);color:#2fa84f}
+.kebab-wrap{position:relative}
+.kebab-btn{width:30px;height:30px;border:0;border-radius:50%;background:rgba(90,80,150,.08);color:#4d43a1;font-size:18px;font-weight:900;line-height:1;cursor:pointer}
+.kebab-menu{position:absolute;right:0;top:34px;z-index:20;min-width:140px;padding:6px;border-radius:12px;background:rgba(255,255,255,.98);border:1px solid rgba(95,90,150,.15);box-shadow:0 10px 30px rgba(40,35,90,.18)}
+.kebab-menu button{display:block;width:100%;padding:9px 12px;border:0;border-radius:8px;background:none;text-align:left;font-family:inherit;font-size:13px;font-weight:700;color:#303247;cursor:pointer}
+.kebab-menu button:hover{background:rgba(110,100,220,.1)}
+.kebab-menu button.danger{color:#e03131}
+.chat-box{margin-top:12px;padding:12px;border-radius:14px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85)}
+.chat-notice{min-height:16px;margin-bottom:6px;font-size:11px;font-weight:700;color:#8a6d00}
+.chat-msgs{display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;padding:2px}
+.msg-row{display:flex;flex-direction:column;max-width:86%}
+.msg-row.mine{align-self:flex-end;align-items:flex-end}
+.msg-row.theirs{align-self:flex-start;align-items:flex-start}
+.bubble{padding:8px 12px;border-radius:14px;font-size:13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+.mine .bubble{background:#FEE500;color:#3C1E1E;border-bottom-right-radius:4px}
+.theirs .bubble{background:#fff;color:#2b2a5c;border-bottom-left-radius:4px}
+.msg-meta{margin-top:2px;font-size:10px;color:#8a8ea0}
+.msg-meta button{border:0;background:none;padding:0 0 0 6px;color:#6a5fc8;font-family:inherit;font-size:10px;font-weight:800;cursor:pointer}
+.msg-sys{align-self:center;padding:3px 10px;border-radius:999px;background:rgba(90,80,150,.1);color:#6b6f82;font-size:11px;font-weight:700}
+.chat-form,.msg-edit{display:flex;gap:6px;width:100%}
+.chat-form{margin-top:10px}
+.chat-form input,.msg-edit input{flex:1;min-width:0;padding:10px 12px;border:1px solid rgba(95,90,150,.2);border-radius:12px;background:rgba(255,255,255,.88);color:#202238;font-family:inherit;font-size:13px;outline:0}
+.chat-form input:disabled{background:rgba(225,225,238,.7)}
+.chat-send{padding:0 16px;border:0;border-radius:12px;background:#5145ad;color:#fff;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.chat-send:disabled{opacity:.45;cursor:not-allowed}
+
+@media(max-width:760px){
+ main{width:min(calc(100% - 22px),650px);padding-top:88px}
+ .text-container{min-height:64px;padding:12px 14px;gap:8px}
+ h1{font-size:21px}
+ .hero{padding:31px 24px;border-radius:24px}
+ .hero:after{right:10px;bottom:-28px;font-size:110px}
+ .quick-grid{grid-template-columns:1fr}
+ .quick-card{padding:16px 18px}
+ section{padding:21px 19px}
+ .cmd-list{grid-template-columns:1fr}
+ .header-actions{gap:5px}
+ .account-status{max-width:120px;font-size:11px}
+ .account-btn{padding:8px 10px;font-size:11px}
+ .plan-grid{grid-template-columns:1fr}
+ .plan-card{padding:17px}
+}
+@media(max-width:420px){
+ h1{font-size:18px}
+ .text-container{flex-wrap:wrap}
+ .text-container h1{flex:1}
+ .header-actions{order:3;width:100%;justify-content:flex-end}
+ .back-btn{order:2;padding:8px 12px;font-size:12px}
+ .hero h2{font-size:31px}
+ .hero-actions{flex-direction:column}
+ .hero-btn,.kakao-link-btn,.submit-btn,.flow-submit{width:100%}
+ .time-table th,.time-table td{padding:9px 10px;font-size:12px}
+ .install-option{padding:16px 14px;gap:10px}
+ .option-icon{flex-basis:38px;width:38px;height:38px;font-size:19px}
+ .option-copy strong{font-size:14px}
+ .cancel-choice-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+<div class="bg-fx" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span><span class="b5"></span><span class="b6"></span><svg class="fo" style="--x:8%;--s:56px;--d:20s;--dl:-2s;--t:9s"><use href="#kakao-icon"/></svg><i class="fo" style="--x:20%;--s:34px;--d:24s;--dl:-10s;--t:7s"></i><svg class="fo" style="--x:36%;--s:44px;--d:18s;--dl:-7s;--t:11s"><use href="#kakao-icon"/></svg><i class="fo" style="--x:50%;--s:66px;--d:27s;--dl:-15s;--t:8s"></i><svg class="fo" style="--x:62%;--s:40px;--d:22s;--dl:-12s;--t:10s"><use href="#kakao-icon"/></svg><i class="fo" style="--x:72%;--s:30px;--d:19s;--dl:-5s;--t:7s"></i><svg class="fo" style="--x:82%;--s:62px;--d:26s;--dl:-18s;--t:12s"><use href="#kakao-icon"/></svg><i class="fo" style="--x:91%;--s:42px;--d:21s;--dl:-9s;--t:9s"></i><svg class="fo" style="--x:28%;--s:32px;--d:30s;--dl:-21s;--t:8s"><use href="#kakao-icon"/></svg></div>
+
+<!-- 카카오톡 말풍선 아이콘 (재사용) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="kakao-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3C6.48 3 2 6.58 2 10.95c0 2.82 1.86 5.3 4.66 6.7l-.95 3.5c-.08.3.26.54.52.37l4.17-2.77c.52.07 1.05.11 1.6.11 5.52 0 10-3.58 10-7.91S17.52 3 12 3z"/></symbol>
+</svg>
+
+<input type="radio" name="view" id="view-home" checked>
+<input type="radio" name="view" id="view-feature">
+<input type="radio" name="view" id="view-install">
+
+<div class="text-container">
+ <h1>
+  <span id="title-home">&#x1F916; 동동봇 홈페이지</span>
+  <span id="title-feature">&#x1F3AE; 동동봇 기능</span>
+  <span id="title-install">&#x1F4DD; 봇 설치 및 관리</span>
+ </h1>
+ <div class="header-actions">
+  <span id="account-status" class="account-status">로그인 전</span>
+  <button type="button" id="account-open-btn" class="account-btn kakao"><svg class="kakao-ico"><use href="#kakao-icon"/></svg><span id="account-open-label">카카오 로그인</span></button>
+  <button type="button" id="account-logout-btn" class="account-btn" hidden>로그아웃</button>
+ </div>
+ <label class="back-btn" for="view-home">&#x2190; 이전으로</label>
+</div>
+
+<main>
+<div id="home-view">
+ <div class="hero">
+  <div class="hero-badge">DONGDONGBOT · OPENCHAT BOT</div>
+  <h2>카카오톡 오픈채팅을<br>더 재미있게.</h2>
+  <p>게임부터 AI 대화, 채팅 랭킹, 각종 편의 기능까지.<br>동동봇의 주요 기능과 설치 신청을 한 곳에서 확인해보세요.</p>
+  <div class="hero-actions">
+   <label class="hero-btn primary" for="view-feature">&#x1F3AE; 기능 둘러보기</label>
+   <label class="hero-btn secondary" for="view-install">&#x1F4DD; 설치 신청하기</label>
+  </div>
+  <div class="chat-demo" aria-hidden="true">
+   <div class="cb me c1">/뭐먹지 &#x1F914;</div>
+   <div class="cb bot c2">&#x1F35C; 오늘은 칼국수 어때요?</div>
+   <div class="cb me c3">/운세</div>
+   <div class="cb bot c4">&#x1F340; 오늘은 좋은 일이 생길 거예요!</div>
+  </div>
+ </div>
+
+ <div class="quick-grid">
+  <div class="quick-card"><div class="quick-number">FEATURE 01</div><strong>다양한 기능</strong><span>게임, 미니게임, AI, 채팅 기능</span></div>
+  <div class="quick-card"><div class="quick-number">FEATURE 02</div><strong>오픈채팅 중심</strong><span>카카오톡 방에서 바로 사용하는 봇</span></div>
+  <div class="quick-card"><div class="quick-number">FEATURE 03</div><strong>간편한 설치 신청</strong><span>약관 확인 후 링크를 제출하면 신청 가능</span></div>
+ </div>
+
+ <section>
+  <h2>&#x1F4D6; 동동봇 소개</h2>
+  <p>동동봇은 카카오톡 오픈채팅방에서 다양한 기능을 제공하는 봇 서비스입니다. 게임, AI 대화, 채팅 랭킹 등 여러 기능을 한 번에 즐길 수 있어요.</p>
+ </section>
+
+ <label class="clickable" for="view-feature">
+  <section>
+   <h2>&#x1F3AE; 동동봇 기능</h2>
+   <p>오픈채팅방에 동동봇을 초대한 뒤 <b>/도움말</b>을 입력하면 전체 명령어를 볼 수 있어요. 검 강화, 낚시, 광질, 땅파기 등 다양한 게임부터 AI 대화, 채팅 랭킹, 입퇴장 감지까지 확인해보세요.</p>
+   <span class="hint">&#x1F449; 클릭해서 전체 기능 보기</span>
+  </section>
+ </label>
+
+ <label class="clickable" for="view-install">
+  <section>
+   <h2>&#x1F4DD; 봇 설치</h2>
+   <p>새로운 방에 동동봇을 설치하거나, 기존 설치 방을 옮기거나, 설치를 취소할 수 있어요.</p>
+   <span class="hint">&#x1F449; 클릭해서 신청 종류 선택</span>
+  </section>
+ </label>
+
+ <section>
+  <h2><span class="kakao-badge"><svg style="color:#3C1E1E"><use href="#kakao-icon"/></svg></span>문의하기</h2>
+  <p>궁금한 점이나 버그 제보는 아래 방법으로 연락 주세요.</p>
+  <div class="contact-buttons">
+   <a class="kakao-link-btn" href="https://open.kakao.com/me/DongDongBotDev" target="_blank" rel="noopener"><svg class="kakao-ico"><use href="#kakao-icon"/></svg>카카오톡 1:1 채팅 문의하기</a>
+   <a class="kakao-link-btn alt" href="https://open.kakao.com/o/p6VwE4Ji" target="_blank" rel="noopener"><svg class="kakao-ico" style="color:#FEE500"><use href="#kakao-icon"/></svg>카카오톡 오픈채팅방에서 문의하기</a>
+  </div>
+ </section>
+</div>
+
+<div id="feature-view">
+ <div class="category"><h3>&#x1F4D6; 사용 방법</h3><p>오픈채팅방에 동동봇을 초대한 뒤 <b>/도움말</b>을 입력하면 아래 모든 명령어를 확인할 수 있어요.</p></div>
+
+ <div class="category"><h3>&#x1F3AE; 게임</h3><div class="cmd-list">
+  <div class="cmd-item"><span class="cmd-code">/주식도움말</span><span class="cmd-desc">주식 관련 도움말</span></div>
+  <div class="cmd-item"><span class="cmd-code">/낚시도움말</span><span class="cmd-desc">낚시 게임</span></div>
+  <div class="cmd-item"><span class="cmd-code">/검도움말</span><span class="cmd-desc">검 강화 게임</span></div>
+  <div class="cmd-item"><span class="cmd-code">/광질도움말</span><span class="cmd-desc">광석 채굴 게임</span></div>
+  <div class="cmd-item"><span class="cmd-code">/땅파기도움말</span><span class="cmd-desc">땅 파기 타이쿤 게임</span></div>
+  <div class="cmd-item"><span class="cmd-code">/브레인롯.도움말</span><span class="cmd-desc">브훔 게임 (권한 지급 필요)</span></div>
+ </div></div>
+
+ <div class="category"><h3>&#x1F579; 미니게임</h3><div class="cmd-list">
+  <div class="cmd-item"><span class="cmd-code">/아우라.도움말</span><span class="cmd-desc">아우라 뽑기 게임</span></div>
+  <div class="cmd-item"><span class="cmd-code">/아재재그</span><span class="cmd-desc">아재개그</span></div>
+  <div class="cmd-item"><span class="cmd-code">/틱택토.도움말</span><span class="cmd-desc">틱택토 게임</span></div>
+ </div></div>
+
+ <div class="category"><h3>&#x1F4CA; 동동봇 상태</h3><div class="cmd-list">
+  <div class="cmd-item"><span class="cmd-code">/봇상태</span><span class="cmd-desc">동동봇 상태 점검</span></div>
+  <div class="cmd-item"><span class="cmd-code">/동동봇.업데이트.알림</span><span class="cmd-desc">업데이트 현황 확인</span></div>
+ </div></div>
+
+ <div class="category"><h3>&#x1F5EF; 채팅 및 랭킹</h3><div class="cmd-list">
+  <div class="cmd-item"><span class="cmd-code">/채팅랭킹</span><span class="cmd-desc">채팅 랭킹 보기</span></div>
+  <div class="cmd-item"><span class="cmd-code">/채팅수</span><span class="cmd-desc">내 채팅 기록 보기</span></div>
+ </div></div>
+
+ <div class="category"><h3>&#x1F9BE; 동동봇 AI</h3><div class="cmd-list">
+  <div class="cmd-item"><span class="cmd-code">/동동아 (내용)</span><span class="cmd-desc">AI에게 질문하기</span></div>
+  <div class="cmd-item"><span class="cmd-code">/자유대화.on</span><span class="cmd-desc">AI 자유 대화 켜기</span></div>
+  <div class="cmd-item"><span class="cmd-code">/자유대화.off</span><span class="cmd-desc">AI 자유 대화 끄기</span></div>
+  <div class="cmd-item"><span class="cmd-code">/설정.(성격)</span><span class="cmd-desc">AI 성격 설정</span></div>
+  <div class="cmd-item"><span class="cmd-code">/동동봇.AI.상태</span><span class="cmd-desc">동동봇 AI 상태 확인</span></div>
+ </div></div>
+
+ <div class="category"><h3>&#x1F4B0; 후원 및 결제</h3><div class="cmd-list">
+  <div class="cmd-item"><span class="cmd-code">/동동봇.상점</span><span class="cmd-desc">후원하고 아이템 얻기</span></div>
+ </div></div>
+
+ <div class="category"><h3>&#x1F3B8; 기타 기능</h3><div class="cmd-list">
+  <div class="cmd-item"><span class="cmd-code">/날씨.(지역)</span><span class="cmd-desc">날씨 확인</span></div>
+  <div class="cmd-item"><span class="cmd-code">/뉴스</span><span class="cmd-desc">실시간 뉴스 보기</span></div>
+  <div class="cmd-item"><span class="cmd-code">/뭐먹지</span><span class="cmd-desc">음식 추천</span></div>
+  <div class="cmd-item"><span class="cmd-code">/멘션알림.on / .off</span><span class="cmd-desc">멘션 누적 알림 켜기/끄기</span></div>
+  <div class="cmd-item"><span class="cmd-code">/운세</span><span class="cmd-desc">오늘의 운세 확인</span></div>
+  <div class="cmd-item"><span class="cmd-code">/노래찾기.(가사)</span><span class="cmd-desc">가사로 노래 찾기</span></div>
+  <div class="cmd-item"><span class="cmd-code">/고유번호. @멘션</span><span class="cmd-desc">사용자 고유번호 확인</span></div>
+ </div></div>
+
+ <div class="category">
+  <h3>&#x1F44B; 입장 및 퇴장 및 강퇴 감지</h3>
+  <p>채팅방의 입장/퇴장/강퇴를 자동으로 감지하고, 각 인원의 입장 횟수, 퇴장 횟수, 강퇴 당한 횟수를 기록해 보여주는 기능이에요.</p>
+ </div>
+</div>
+
+<div id="install-view">
+ <div id="install-menu">
+  <section>
+   <h2>&#x1F4DD; 봇 설치 및 관리</h2>
+   <p>원하는 작업을 선택해 주세요.</p>
+  </section>
+
+  <div class="plan-note" id="login-required-note">
+   &#x1F512; 봇 설치 · 이전 · 취소 신청과 기록 확인은 <b>카카오 로그인 후</b> 이용할 수 있어요.
+   <div style="margin-top:10px"><button type="button" class="account-btn kakao" id="note-login-btn"><svg class="kakao-ico"><use href="#kakao-icon"/></svg>카카오로 로그인하기</button></div>
+  </div>
+
+  <div class="install-options">
+   <button type="button" class="install-option" data-open="install-flow">
+    <span class="option-icon">&#x2795;</span>
+    <span class="option-copy"><strong>봇 설치</strong><small>새로운 오픈채팅방에 동동봇 설치 신청</small></span>
+    <span class="option-arrow">&#x203A;</span>
+   </button>
+   <button type="button" class="install-option" data-open="move-flow">
+    <span class="option-icon">&#x1F504;</span>
+    <span class="option-copy"><strong>봇 설치 방 옮기기</strong><small>기존 설치 방에서 다른 방으로 이전 신청</small></span>
+    <span class="option-arrow">&#x203A;</span>
+   </button>
+   <button type="button" class="install-option" data-open="cancel-flow">
+    <span class="option-icon">&#x2716;</span>
+    <span class="option-copy"><strong>봇 설치 취소</strong><small>현재 설치된 방의 봇 제거 요청</small></span>
+    <span class="option-arrow">&#x203A;</span>
+   </button>
+   <button type="button" class="install-option" data-open="history-flow">
+    <span class="option-icon">&#x1F4CB;</span>
+    <span class="option-copy"><strong>봇 설치 및 관리 기록</strong><small>내가 신청한 설치·이전·취소 기록을 시각과 함께 확인</small></span>
+    <span class="option-arrow">&#x203A;</span>
+   </button>
+   <button type="button" class="install-option" data-open="admin-flow" id="admin-menu-btn" hidden>
+    <span class="option-icon">&#x1F451;</span>
+    <span class="option-copy"><strong>신청 관리 (개발자)</strong><small>전체 신청 확인 · 대화 · 취소 · 밴 관리</small></span>
+    <span class="option-arrow">&#x203A;</span>
+   </button>
+  </div>
+ </div>
+
+ <div id="install-flow" class="install-subview">
+  <button type="button" class="subview-back" data-menu>&#x2190; 신청 종류 선택으로</button>
+
+  <input type="checkbox" id="agree-checkbox">
+  <section>
+   <h2>&#x1F4DD; 동동봇 설치 신청</h2>
+   <p>원하는 설치 요금제를 먼저 선택해 주세요.</p>
+   <div class="plan-grid" role="group" aria-label="봇 설치 요금제">
+    <button type="button" class="plan-card" data-plan="install_permanent" aria-pressed="false">
+     <span class="plan-name">영구 봇 설치</span><span class="plan-price">30,000<small>원</small></span>
+     <span class="plan-desc">1회 신청 · 영구 설치형</span>
+    </button>
+    <button type="button" class="plan-card" data-plan="install_subscription" aria-pressed="false">
+     <span class="plan-name">정기 결제 봇 설치</span><span class="plan-price">5,000<small>원 / 월</small></span>
+     <span class="plan-desc">매월 이용 방식 · 실제 자동결제는 결제 시스템 설정 이후 제공</span>
+    </button>
+   </div>
+   <p class="plan-note">안내: 현재는 설치 신청 접수 단계입니다. 이 페이지에서 요금이 청구되거나 정기결제가 등록되지는 않습니다.</p>
+   <div class="terms-box">
+    <p class="terms-title">&#x1F4DC; 동동봇 이용약관</p>
+
+    <div class="terms-section">
+     <p class="terms-heading">&#x2705; 봇 설치 조건</p>
+     <ul class="pledge-list">
+      <li>봇을 설치할 방의 관리진 및 방 안의 모든 인원의 허락을 받았습니다.</li>
+      <li>설치해 놓고 방치하지 않겠습니다.</li>
+      <li>동동봇 × 밴타봇 공식 방을 퇴장하지 않겠습니다.</li>
+      <li>봇을 잘 관리할 수 있는 책임감을 갖겠습니다.</li>
+     </ul>
+    </div>
+
+    <div class="terms-section">
+     <p class="terms-heading">&#x1F4CB; 이용 수칙</p>
+     <div class="rule-card">
+      <p class="rule-title"><span class="num">1</span>봇을 테러하지 말아 주세요.</p>
+      <ul><li>신고 테러</li><li>도배 테러</li><li>욕설 테러</li><li>기타 등등</li></ul>
+     </div>
+     <div class="rule-card">
+      <p class="rule-title"><span class="num">2</span>봇을 악용하지 말아 주세요.</p>
+      <ul><li>게임 악용</li><li>기능 악용</li><li>기타 등등</li></ul>
+     </div>
+     <div class="rule-card">
+      <p class="rule-title"><span class="num">3</span>봇이 느리더라도 천천히 써주세요.</p>
+      <ul>
+       <li>봇이 느리면 관리진을 호출해 주세요.</li>
+       <li>봇이 느리더라도 명령어를 계속 쓰지 말아 주세요.</li>
+       <li>봇의 답변 메시지가 올 때까지 기다린 뒤 사용해 주세요.</li>
+      </ul>
+     </div>
+     <div class="rule-card">
+      <p class="rule-title"><span class="num">4</span>봇에게 무슨 일이 생기면 중재해 주세요.</p>
+      <ul>
+       <li>누군가가 봇을 악용할 때</li>
+       <li>누군가가 봇으로 도배를 할 때</li>
+       <li>이외에 다른 일이 생길 때</li>
+      </ul>
+     </div>
+    </div>
+
+    <div class="terms-section">
+     <p class="terms-heading">&#x23F3; 봇 설치가 가능한 시간</p>
+     <table class="time-table">
+      <tr><th>평일 (월~금)</th><td>6시 30분 ~ 22시 0분</td></tr>
+      <tr><th>주말 (토, 일)</th><td>12시 0분 ~ 22시 0분</td></tr>
+     </table>
+     <p class="terms-note">※ 동동봇 관리자 또는 밴타봇 관리자의 상황에 따라 시간과 요일이 변경될 수 있습니다.</p>
+    </div>
+
+    <div class="terms-section">
+     <p class="terms-heading">&#x1F4E8; 신청 및 정보 이용 안내</p>
+     <ul class="pledge-list">
+      <li>동동봇 설치를 신청하면 해당 오픈채팅방에 봇이 초대될 수 있도록 운영진에게 정보가 전달됩니다.</li>
+      <li>부적절한 채팅방(불법/유해 콘텐츠 등)에는 설치가 거부될 수 있습니다.</li>
+      <li>설치 이후 발생하는 채팅방 내 문제에 대해 동동봇 개발자는 책임지지 않습니다.</li>
+      <li>부정 이용이 확인되면 신청 및 대화 이용이 제한(밴)될 수 있습니다.</li>
+      <li>신청·이전·취소 내역은 접수된 날짜와 시각(시·분·초)과 함께 <b>봇 설치 및 관리 기록</b>에 저장되며, 로그인한 본인만 확인할 수 있습니다.</li>
+     </ul>
+    </div>
+
+    <div class="terms-section">
+     <p class="terms-heading">&#x1F510; 개인정보 수집·이용 안내</p>
+     <div class="rule-card">
+      <p class="rule-title"><span class="num">1</span>수집 항목</p>
+      <ul>
+       <li>카카오 로그인 시 제공되는 닉네임, 회원 식별번호, 이메일(동의한 경우)</li>
+       <li>신청 시 입력한 오픈채팅방 링크, 본인의 오픈프로필 링크, 취소 사유(선택)</li>
+       <li>이메일, 전화번호 등 연락처 (연락이 필요한 경우 입력받거나, 이용자가 제공에 동의한 경우)</li>
+       <li>신청·이전·취소 기록과 접수 일시(날짜·시·분·초)</li>
+       <li>신청 내용에 대해 관리자와 주고받은 대화 메시지</li>
+      </ul>
+     </div>
+     <div class="rule-card">
+      <p class="rule-title"><span class="num">2</span>이용 목적</p>
+      <ul>
+       <li>봇 설치·이전·취소 신청의 접수 및 처리, 진행 상황 안내</li>
+       <li>본인 확인 및 중복·부정 신청 방지</li>
+       <li>문의 응대 및 서비스 관련 공지</li>
+      </ul>
+     </div>
+     <div class="rule-card">
+      <p class="rule-title"><span class="num">3</span>보유 및 이용 기간</p>
+      <ul>
+       <li>서비스 이용 종료 또는 삭제 요청 시까지 보관한 뒤 지체 없이 파기합니다.</li>
+       <li>관련 법령에 따라 보관이 필요한 경우 해당 기간 동안 보관합니다.</li>
+      </ul>
+     </div>
+     <div class="rule-card">
+      <p class="rule-title"><span class="num">4</span>제3자 제공 및 저장</p>
+      <ul>
+       <li>수집한 정보는 제3자에게 제공하지 않습니다.</li>
+       <li>서비스 운영을 위해 클라우드 데이터 저장소(Supabase 등)에 저장될 수 있습니다.</li>
+      </ul>
+     </div>
+     <div class="rule-card">
+      <p class="rule-title"><span class="num">5</span>동의 거부 및 열람·삭제</p>
+      <ul>
+       <li>개인정보 수집·이용에 동의하지 않을 수 있으나, 이 경우 신청 및 기록 확인이 제한됩니다.</li>
+       <li>열람·정정·삭제를 원하시면 공식 오픈채팅방 또는 1:1 채팅으로 문의해 주세요.</li>
+      </ul>
+     </div>
+    </div>
+   </div>
+
+   <label class="agree-label" for="agree-checkbox">
+    <span class="fake-checkbox">&#x2713;</span>
+    <span>위 이용약관 및 개인정보 수집·이용에 동의합니다.</span>
+   </label>
+
+   <div class="install-form">
+    <label class="field-label" for="kakao-link-input">카카오톡 오픈채팅 링크</label>
+    <input type="text" id="kakao-link-input" placeholder="카카오톡 오픈채팅 링크를 입력하세요 (예: https://open.kakao.com/o/...)">
+
+    <label class="field-label" for="kakao-profile-input">본인의 카카오톡 오픈프로필 링크</label>
+    <input type="text" id="kakao-profile-input" placeholder="본인의 오픈프로필 링크 (https://open.kakao.com/me/... 또는 /o/...)">
+
+    <button type="button" class="submit-btn" id="submit-btn">설치 요금제를 선택해 주세요</button>
+    <p class="form-note">카카오 로그인 후 신청하면 접수 시각과 함께 <b>봇 설치 및 관리 기록</b>에 저장돼요. 제출하면 개인정보 수집·이용(닉네임, 입력한 링크, 이메일·연락처, 신청 기록과 접수 시각)에 동의한 것으로 처리돼요.</p>
+   </div>
+  </section>
+ </div>
+
+ <div id="move-flow" class="install-subview">
+  <button type="button" class="subview-back" data-menu>&#x2190; 신청 종류 선택으로</button>
+  <section>
+   <h2>&#x1F504; 봇 설치 방 옮기기</h2>
+   <p class="flow-note">현재 설치된 방과 옮길 방의 링크, 본인의 오픈프로필 링크를 입력해 주세요.</p>
+
+   <label class="field-label" for="move-from">현재 설치된 오픈채팅방 링크</label>
+   <input class="flow-input" type="text" id="move-from" placeholder="현재 설치된 방 링크 (https://open.kakao.com/o/...)">
+
+   <label class="field-label" for="move-to">옮길 오픈채팅방 링크</label>
+   <input class="flow-input" type="text" id="move-to" placeholder="옮길 방 링크 (https://open.kakao.com/o/...)">
+
+   <label class="field-label" for="move-profile">본인의 카카오톡 오픈프로필 링크</label>
+   <input class="flow-input" type="text" id="move-profile" placeholder="오픈프로필 링크 (/me/ 또는 /o/ 형식)">
+
+   <button type="button" class="flow-submit" id="move-submit">방 이전 신청하기</button>
+   <p class="flow-note">카카오 로그인 후 신청하면 접수 시각과 함께 <b>봇 설치 및 관리 기록</b>에 저장돼요. 제출하면 개인정보 수집·이용(닉네임, 입력한 링크, 이메일·연락처, 신청 기록과 접수 시각)에 동의한 것으로 처리돼요.</p>
+  </section>
+ </div>
+
+ <div id="cancel-flow" class="install-subview">
+  <button type="button" class="subview-back" data-menu>&#x2190; 신청 종류 선택으로</button>
+  <section>
+   <h2>&#x2716; 봇 설치 및 정기결제 관리</h2>
+   <p class="flow-note">취소할 항목을 먼저 선택해 주세요. 정기결제는 결제 시스템 연결 후에 실제 취소 처리가 가능하며, 현재는 취소 요청 접수 단계입니다.</p>
+   <div class="cancel-choice-grid" role="group" aria-label="취소 종류">
+    <button type="button" class="cancel-choice" data-cancel-type="cancel_subscription" aria-pressed="false">정기 결제 취소</button>
+    <button type="button" class="cancel-choice" data-cancel-type="cancel_install" aria-pressed="false">봇 설치 취소</button>
+   </div>
+
+   <label class="field-label" for="cancel-chat">현재 설치된 오픈채팅방 링크</label>
+   <input class="flow-input" type="text" id="cancel-chat" placeholder="현재 설치된 방 링크 (https://open.kakao.com/o/...)">
+
+   <label class="field-label" for="cancel-profile">본인의 카카오톡 오픈프로필 링크</label>
+   <input class="flow-input" type="text" id="cancel-profile" placeholder="오픈프로필 링크 (/me/ 또는 /o/ 형식)">
+
+   <label class="field-label" for="cancel-reason">취소 사유 (선택)</label>
+   <input class="flow-input" type="text" id="cancel-reason" placeholder="취소 사유를 입력해 주세요 (선택 사항)">
+
+   <button type="button" class="flow-submit" id="cancel-submit">취소 종류를 선택해 주세요</button>
+   <p class="flow-note">카카오 로그인 후 신청하면 접수 시각과 함께 <b>봇 설치 및 관리 기록</b>에 저장돼요. 제출하면 개인정보 수집·이용(닉네임, 입력한 링크, 이메일·연락처, 신청 기록과 접수 시각)에 동의한 것으로 처리돼요.</p>
+  </section>
+ </div>
+
+ <div id="history-flow" class="install-subview">
+  <button type="button" class="subview-back" data-menu>&#x2190; 신청 종류 선택으로</button>
+  <section>
+   <h2>&#x1F4CB; 봇 설치 및 관리 기록</h2>
+   <p class="flow-note">설치 · 이전 · 취소 신청 기록이 접수된 날짜와 시각(시·분·초)과 함께 저장돼요. 본인이 신청한 기록만 보여요. 각 기록의 <b>대화</b> 버튼으로 관리자와 메시지를 주고받을 수 있어요.</p>
+   <div style="margin:14px 0"><button type="button" class="account-btn" id="history-refresh">&#x1F504; 새로고침</button></div>
+   <div id="history-list"></div>
+  </section>
+ </div>
+
+ <div id="admin-flow" class="install-subview">
+  <button type="button" class="subview-back" data-menu>&#x2190; 신청 종류 선택으로</button>
+  <section>
+   <h2>&#x1F451; 신청 관리 (개발자)</h2>
+   <p class="flow-note">모든 신청의 내용과 카카오 이메일을 볼 수 있어요. 각 신청의 대화창에 <b>/채팅종료</b> 또는 <b>/채팅시작</b>을 입력하면 대화를 끊거나 다시 열 수 있어요.</p>
+   <div style="margin:14px 0"><button type="button" class="account-btn" id="admin-refresh">&#x1F504; 새로고침</button></div>
+   <div id="admin-list"></div>
+  </section>
+ </div>
+</div>
+</main>
+
+<div id="auth-overlay" class="auth-overlay" hidden>
+ <section class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+  <button type="button" class="auth-close" id="auth-close" aria-label="닫기">×</button>
+  <h2 class="auth-title" id="auth-title">동동봇 로그인</h2>
+  <p class="auth-subtitle">카카오 계정으로 로그인하세요. 처음이라면 자동으로 회원가입이 진행돼요. 계정이 여러 개라면 <b>다른 카카오 계정으로 로그인</b>을 눌러 선택하세요.</p>
+  <button type="button" class="kakao-login-btn" id="kakao-login-btn"><svg class="kakao-ico"><use href="#kakao-icon"/></svg>카카오로 시작하기</button>
+  <button type="button" class="kakao-switch-btn" id="kakao-switch-btn">다른 카카오 계정으로 로그인</button>
+  <p id="auth-message" class="auth-message" role="status" aria-live="polite"></p>
+  <p class="auth-small">로그인하면 닉네임 등 카카오 계정 정보와 신청 기록(접수 시각 포함)이 서비스 운영을 위해 저장돼요. 이메일·전화번호 등 연락처는 신청 처리에 필요할 때 안내 후 수집할 수 있어요.</p>
+ </section>
+</div>
+
+<div class="site-footer">© 2026 DongDongBot · All rights reserved.</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/*
+ * SUPABASE_URL / SUPABASE_ANON_KEY: Supabase 공개(publishable) 키
+ * secret key / service_role key는 절대 여기에 넣지 마세요.
+ */
+window.DONGDONGBOT_CONFIG = {
+ SUPABASE_URL: "https://qyxotpirpptpnwwnilho.supabase.co",
+ SUPABASE_ANON_KEY: "sb_publishable_40gE-yEyBcfH-80flyo4nQ_Qd_FlRDu"
+};
+
+(function(){
+ "use strict";
+ const cfg=window.DONGDONGBOT_CONFIG||{};
+ const authClient=(window.supabase&&cfg.SUPABASE_URL&&cfg.SUPABASE_ANON_KEY)?window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY):null;
+ let currentSession=null,selectedInstallPlan="",selectedCancelType="",isAdmin=false,isBanned=false,curNick="",bannedSet=new Set();
+ const pollers=new Set();
+
+ const $=(id)=>document.getElementById(id);
+ const menu=$("install-menu");
+ const flows={"install-flow":$("install-flow"),"move-flow":$("move-flow"),"cancel-flow":$("cancel-flow"),"history-flow":$("history-flow"),"admin-flow":$("admin-flow")};
+ const overlay=$("auth-overlay");
+
+ /* ---------- 신청 화면 전환 ---------- */
+ function showMenu(){
+  clearPollers();
+  Object.values(flows).forEach(f=>f.style.display="none");
+  menu.style.display="block";
+  window.scrollTo({top:0,behavior:"smooth"});
+ }
+ function showFlow(id){
+  clearPollers();
+  menu.style.display="none";
+  Object.values(flows).forEach(f=>f.style.display="none");
+  if(flows[id])flows[id].style.display="block";
+  window.scrollTo({top:0,behavior:"smooth"});
+ }
+ document.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>{
+  if(!currentSession){openAuth();setAuthMessage("신청하려면 먼저 카카오 로그인을 해주세요.",true);return;}
+  const id=b.dataset.open;
+  if(id==="admin-flow"&&!isAdmin)return;
+  showFlow(id);
+  if(id==="history-flow")loadHistory();
+  if(id==="admin-flow")loadAdmin();
+ }));
+ document.querySelectorAll("[data-menu]").forEach(b=>b.addEventListener("click",showMenu));
+ $("view-install").addEventListener("change",function(){if(this.checked)showMenu()});
+
+ /* ---------- 링크 검증 ---------- */
+ function parseKakaoOpenLink(value){
+  const input=String(value||"").trim();if(!input)return null;
+  const normalized=/^https?:\/\//i.test(input)?input:"https://"+input;
+  try{
+   const url=new URL(normalized);
+   if(url.hostname.toLowerCase()!=="open.kakao.com"||url.username||url.password)return null;
+   const match=url.pathname.replace(/\/+$/,"").match(/^\/(o|me)\/([^/]+)$/i);
+   if(!match)return null;
+   url.protocol="https:";
+   return {url:url.toString(),type:match[1].toLowerCase()};
+  }catch(e){return null;}
+ }
+ function validChatLink(v){const p=parseKakaoOpenLink(v);return p&&p.type==="o"?p.url:null;}
+ function validProfileLink(v){const p=parseKakaoOpenLink(v);return p&&(p.type==="me"||p.type==="o")?p.url:null;}
+
+ /* ---------- 로그인 모달 ---------- */
+ function setAuthMessage(text,isError){
+  const el=$("auth-message");el.textContent=text||"";el.style.color=isError?"#b42318":"#5145ad";
+ }
+ function openAuth(){
+  overlay.hidden=false;
+  setAuthMessage("");
+  if(!authClient)setAuthMessage("서비스 연결 설정이 아직 완료되지 않았습니다.",true);
+ }
+ function closeAuth(){overlay.hidden=true;}
+ $("auth-close").addEventListener("click",closeAuth);
+ overlay.addEventListener("click",e=>{if(e.target===overlay)closeAuth()});
+ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!overlay.hidden)closeAuth()});
+
+ function friendlyError(err){
+  const m=String(err&&err.message||err||"오류가 발생했습니다.");
+  if(m.includes("Failed to fetch")||m.includes("NetworkError"))return "서버에 연결할 수 없습니다. 주소와 서버 상태를 확인해 주세요.";
+  if(/does not exist|schema cache/i.test(m))return "기록 저장소가 아직 준비되지 않았습니다. 관리자에게 문의해 주세요.";
+  if(/row-level security|permission denied/i.test(m))return "권한이 없거나 이용이 제한된 계정이에요.";
+  return m;
+ }
+
+ /* ---------- 계정 상태 표시 ---------- */
+ function updateAccountUI(session){
+  currentSession=session||null;
+  const user=session&&session.user;
+  const logged=!!user;
+  const meta=(user&&user.user_metadata)||{};
+  const nickname=user&&(meta.nickname||meta.full_name||meta.name||meta.preferred_username||(user.email?user.email.split("@")[0]:"회원"));
+  curNick=nickname||"";isAdmin=false;isBanned=false;
+  $("admin-menu-btn").hidden=true;
+  $("account-status").textContent=logged?nickname+" 님":"로그인 전";
+  if(logged)setTimeout(refreshRole,0);
+  $("account-open-label").textContent=logged?"내 계정":"카카오 로그인";
+  $("account-logout-btn").hidden=!logged;
+  $("login-required-note").hidden=logged;
+  $("kakao-login-btn").hidden=logged;
+  if(!logged&&Object.values(flows).some(f=>f.style.display==="block"))showMenu();
+  if(logged){
+   $("account-open-btn").onclick=()=>{overlay.hidden=false;setAuthMessage(nickname+" 님으로 로그인되어 있어요.");};
+   if(!overlay.hidden)closeAuth();
+  }else{
+   $("account-open-btn").onclick=openAuth;
+  }
+ }
+ async function restoreSession(){
+  if(!authClient){updateAccountUI(null);return;}
+  try{const {data}=await authClient.auth.getSession();updateAccountUI(data.session);}
+  catch(e){updateAccountUI(null);}
+  authClient.auth.onAuthStateChange((_event,session)=>updateAccountUI(session));
+ }
+ $("account-logout-btn").addEventListener("click",async()=>{
+  if(!authClient)return;
+  const {error}=await authClient.auth.signOut();
+  if(error)alert(friendlyError(error));else{updateAccountUI(null);alert("로그아웃했습니다.");}
+ });
+
+ /* ---------- 카카오 로그인 ---------- */
+ async function startKakao(forceLogin){
+  if(!authClient){setAuthMessage("Supabase 설정이 완료되지 않았습니다.",true);return;}
+  const btns=[$("kakao-login-btn"),$("kakao-switch-btn")];
+  btns.forEach(b=>b.disabled=true);
+  try{
+   if(forceLogin&&currentSession)await authClient.auth.signOut();
+   const options={redirectTo:window.location.origin+window.location.pathname,scopes:"profile_nickname account_email"};
+   if(forceLogin)options.queryParams={prompt:"login"};
+   const {error}=await authClient.auth.signInWithOAuth({provider:"kakao",options});
+   if(error)throw error;
+  }catch(e){
+   setAuthMessage(friendlyError(e),true);
+   btns.forEach(b=>b.disabled=false);
+  }
+ }
+ $("kakao-login-btn").addEventListener("click",()=>startKakao(false));
+ $("kakao-switch-btn").addEventListener("click",()=>startKakao(true));
+
+ /* ---------- 요금제 / 취소 종류 선택 ---------- */
+ document.querySelectorAll("[data-plan]").forEach(button=>button.addEventListener("click",()=>{
+  selectedInstallPlan=button.dataset.plan;
+  document.querySelectorAll("[data-plan]").forEach(b=>{
+   const on=b===button;b.classList.toggle("selected",on);b.setAttribute("aria-pressed",String(on));
+  });
+  $("submit-btn").disabled=false;
+  $("submit-btn").textContent=selectedInstallPlan==="install_permanent"?"영구 봇 설치 신청하기 (30,000원)":"정기 결제 봇 설치 신청하기 (월 5,000원)";
+ }));
+ document.querySelectorAll("[data-cancel-type]").forEach(button=>button.addEventListener("click",()=>{
+  selectedCancelType=button.dataset.cancelType;
+  document.querySelectorAll("[data-cancel-type]").forEach(b=>{
+   const on=b===button;b.classList.toggle("selected",on);b.setAttribute("aria-pressed",String(on));
+  });
+  $("cancel-submit").disabled=false;
+  $("cancel-submit").textContent=selectedCancelType==="cancel_subscription"?"정기 결제 취소 요청하기":"봇 설치 취소 요청하기";
+ }));
+
+ /* ---------- 신청 기록 · 대화 · 관리 ---------- */
+ const TYPE_LABELS={install_permanent:"봇 설치 신청 · 영구 (30,000원)",install_subscription:"봇 설치 신청 · 정기 (월 5,000원)",move:"봇 설치 방 옮기기",cancel_install:"봇 설치 취소",cancel_subscription:"정기 결제 취소"};
+ const COLS="id,user_id,nickname,email,type,room_link,new_room_link,profile_link,reason,created_at,admin_checked_at,cancelled_at,chat_open";
+ function fmtTime(iso){
+  const g={};new Intl.DateTimeFormat("ko-KR",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date(iso)).forEach(p=>{g[p.type]=p.value});
+  return g.year+"년 "+g.month+"월 "+g.day+"일 "+g.hour+"시 "+g.minute+"분 "+g.second+"초";
+ }
+ function fmtShort(iso){
+  const g={};new Intl.DateTimeFormat("ko-KR",{timeZone:"Asia/Seoul",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date(iso)).forEach(p=>{g[p.type]=p.value});
+  return g.month+"/"+g.day+" "+g.hour+":"+g.minute+":"+g.second;
+ }
+ function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;}
+ function clearPollers(){pollers.forEach(t=>clearInterval(t));pollers.clear();}
+ function applyRoleUI(){
+  $("admin-menu-btn").hidden=!isAdmin;
+  if(currentSession)$("account-status").textContent=curNick+" 님"+(isAdmin?" · 개발자":"");
+ }
+ async function refreshRole(){
+  if(!authClient||!currentSession)return;
+  try{
+   const [a,b]=await Promise.all([authClient.rpc("is_admin"),authClient.rpc("is_banned")]);
+   isAdmin=a.data===true;isBanned=b.data===true;
+  }catch(e){isAdmin=false;isBanned=false;}
+  applyRoleUI();
+ }
+ async function adminUpdate(id,patch){const {error}=await authClient.from("requests").update(patch).eq("id",id);if(error)throw error;}
+
+ function buildChat(r,admin){
+  const myId=currentSession.user.id,banned=isBanned&&!admin;
+  const st={open:r.chat_open!==false,editing:null,last:"",hold:false};
+  const box=el("div","chat-box"),notice=el("div","chat-notice"),list=el("div","chat-msgs"),form=el("div","chat-form");
+  const input=el("input");input.type="text";input.maxLength=2000;
+  const send=el("button","chat-send","보내기");send.type="button";
+  form.append(input,send);box.append(notice,list,form);
+  function paint(){
+   const locked=banned||(!st.open&&!admin);
+   input.disabled=locked;send.disabled=locked;
+   input.placeholder=banned?"이용이 제한되어 메시지를 보낼 수 없어요":!st.open?(admin?"/채팅시작 으로 대화를 다시 열 수 있어요":"관리자가 대화를 종료했어요"):(admin?"메시지 입력 (/채팅종료 로 대화 종료)":"메시지를 입력하세요");
+   if(!st.hold)notice.textContent=banned?"이용이 제한된 계정이에요.":!st.open?"대화가 종료된 상태예요.":"";
+  }
+  function flash(t){notice.textContent=t;st.hold=true;setTimeout(()=>{st.hold=false;paint();},3000);}
+  function msgNode(m){
+   if(m.is_system)return el("div","msg-sys",m.body);
+   const mine=m.sender_id===myId;
+   const row=el("div","msg-row "+(mine?"mine":"theirs"));
+   row.append(el("div","bubble",m.body));
+   const meta=el("div","msg-meta");
+   meta.append(document.createTextNode((mine?"나":(m.sender_id===r.user_id?(r.nickname||"신청자"):"개발자"))+" · "+fmtShort(m.created_at)+(m.edited_at?" · 수정됨":"")));
+   if(mine){
+    if(st.open&&!banned){const eb=el("button","","수정");eb.type="button";eb.onclick=()=>startEdit(m,row);meta.append(eb);}
+    const db=el("button","","삭제");db.type="button";db.onclick=()=>delMsg(m);meta.append(db);
+   }
+   row.append(meta);return row;
+  }
+  function startEdit(m,row){
+   st.editing=m.id;
+   const ed=el("div","msg-edit"),inp=el("input");inp.type="text";inp.maxLength=2000;inp.value=m.body;
+   const ok=el("button","mini-btn","저장"),no=el("button","mini-btn","취소");ok.type="button";no.type="button";
+   ed.append(inp,ok,no);row.replaceChildren(ed);inp.focus();
+   no.onclick=()=>{st.editing=null;load(true);};
+   ok.onclick=async()=>{
+    const v=inp.value.trim();if(!v)return;
+    const {error}=await authClient.from("messages").update({body:v}).eq("id",m.id);
+    st.editing=null;if(error)alert(friendlyError(error));load(true);
+   };
+  }
+  async function delMsg(m){
+   if(!confirm("이 메시지를 삭제할까요?"))return;
+   const {error}=await authClient.from("messages").delete().eq("id",m.id);
+   if(error)alert(friendlyError(error));
+   load(true);
+  }
+  async function load(force){
+   const [mq,rq]=await Promise.all([
+    authClient.from("messages").select("id,sender_id,body,is_system,created_at,edited_at").eq("request_id",r.id).order("created_at",{ascending:false}).order("id",{ascending:false}).limit(500),
+    authClient.from("requests").select("chat_open").eq("id",r.id).maybeSingle()
+   ]);
+   if(rq.data&&rq.data.chat_open!==st.open){st.open=rq.data.chat_open;paint();force=true;}
+   if(mq.error){notice.textContent=friendlyError(mq.error);return;}
+   if(st.editing!==null&&!force)return;
+   const data=mq.data.slice().reverse();
+   const key=data.map(m=>m.id+":"+(m.edited_at||"")).join(",")+"|"+st.open;
+   if(key===st.last&&!force)return;
+   st.last=key;
+   const nearBottom=list.scrollHeight-list.scrollTop-list.clientHeight<40;
+   list.replaceChildren(...(data.length?data.map(msgNode):[el("div","msg-sys","아직 메시지가 없어요")]));
+   if(nearBottom||force)list.scrollTop=list.scrollHeight;
+  }
+  async function sendMsg(){
+   const text=input.value.trim();if(!text)return;
+   try{
+    if(admin&&(text==="/채팅종료"||text==="/채팅시작")){
+     const open=text==="/채팅시작";
+     if(open===st.open){input.value="";flash(open?"이미 대화가 열려 있어요.":"이미 대화가 종료되어 있어요.");return;}
+     await adminUpdate(r.id,{chat_open:open});
+     st.open=open;input.value="";paint();await load(true);return;
+    }
+    if(!st.open){flash("대화가 종료되어 있어요. /채팅시작 으로 다시 열 수 있어요.");return;}
+    send.disabled=true;
+    const {error}=await authClient.from("messages").insert({request_id:r.id,body:text});
+    if(error)throw error;
+    input.value="";await load(true);
+   }catch(e){alert(friendlyError(e));}
+   finally{paint();}
+  }
+  send.onclick=sendMsg;
+  input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();sendMsg();}});
+  paint();load(true);
+  const timer=setInterval(()=>load(false),4000);pollers.add(timer);
+  box.stop=()=>{clearInterval(timer);pollers.delete(timer);};
+  return box;
+ }
+
+ function buildMenu(r,reload){
+  const wrap=el("div","kebab-wrap"),btn=el("button","kebab-btn","\u22EE"),menu=el("div","kebab-menu");
+  btn.type="button";btn.setAttribute("aria-label","관리 메뉴");menu.hidden=true;
+  const banned=bannedSet.has(r.user_id);
+  const add=(label,cls,fn)=>{const b=el("button",cls,label);b.type="button";b.onclick=async e=>{e.stopPropagation();menu.hidden=true;try{await fn();}catch(err){alert(friendlyError(err));}reload();};menu.append(b);};
+  add(r.cancelled_at?"취소 해제":"신청 취소 처리","",async()=>{
+   if(!r.cancelled_at&&!confirm("이 신청을 취소 처리할까요? 신청자에게 '취소되었습니다'가 표시돼요."))return;
+   await adminUpdate(r.id,{cancelled_at:r.cancelled_at?null:new Date().toISOString()});
+  });
+  add("신청 삭제","danger",async()=>{
+   if(!confirm("이 신청과 대화 내용을 완전히 삭제할까요? 되돌릴 수 없어요."))return;
+   const {error}=await authClient.from("requests").delete().eq("id",r.id);if(error)throw error;
+  });
+  if(r.user_id!==currentSession.user.id)add(banned?"밴 해제":"밴","danger",async()=>{
+   if(banned){const {error}=await authClient.from("bans").delete().eq("user_id",r.user_id);if(error)throw error;return;}
+   if(!confirm((r.nickname||"이 사용자")+" 님을 밴할까요? 신청과 메시지를 보낼 수 없게 돼요."))return;
+   const {error}=await authClient.from("bans").insert({user_id:r.user_id,nickname:r.nickname,email:r.email});if(error)throw error;
+  });
+  btn.onclick=e=>{e.stopPropagation();const wasOpen=!menu.hidden;document.querySelectorAll(".kebab-menu").forEach(m=>m.hidden=true);menu.hidden=wasOpen;};
+  wrap.append(btn,menu);return wrap;
+ }
+ document.addEventListener("click",()=>document.querySelectorAll(".kebab-menu").forEach(m=>m.hidden=true));
+
+ function buildCard(r,admin,reload){
+  const card=el("div","rec-card"),top=el("div","rec-top"),right=el("div","rec-right");
+  right.append(el("span","rec-status "+(r.cancelled_at?"st-rejected":r.admin_checked_at?"st-done":""),r.cancelled_at?"취소됨":r.admin_checked_at?"확인됨":"접수됨"));
+  if(admin)right.append(buildMenu(r,reload));
+  top.append(el("span","rec-type",TYPE_LABELS[r.type]||r.type),right);
+  card.append(top,el("div","rec-time","\u{1F552} "+fmtTime(r.created_at)));
+  if(admin){
+   const who=el("div","rec-who");who.append(el("b","","신청자 "),el("span","",(r.nickname||"-")+" · "+(r.email||"이메일 없음")));
+   if(bannedSet.has(r.user_id))who.append(el("span","ban-tag","밴"));
+   card.append(who);
+  }
+  [["채팅방",r.room_link],["옮길 방",r.new_room_link],["오픈프로필",r.profile_link],["사유",r.reason]].filter(x=>x[1]).forEach(([k,v])=>{
+   const row=el("div","rec-line");row.append(el("b","",k+" "),el("span","",v));card.append(row);
+  });
+  if(r.cancelled_at)card.append(el("div","st-line st-cancel","취소되었습니다."));
+  else if(r.admin_checked_at){const d=el("div","st-line st-ok");d.append(el("span","ok-ico","\u2713"),document.createTextNode("관리자가 확인했습니다"));card.append(d);}
+  const acts=el("div","rec-actions"),chatBtn=el("button","mini-btn","\u{1F4AC} 대화");chatBtn.type="button";
+  let chat=null;
+  chatBtn.onclick=()=>{if(chat){chat.stop();chat.remove();chat=null;return;}chat=buildChat(r,admin);card.append(chat);};
+  acts.append(chatBtn);
+  if(admin){
+   const ck=el("button","mini-btn ok",r.admin_checked_at?"\u2713 확인 취소":"\u2713 확인했어요");ck.type="button";
+   ck.onclick=async()=>{try{await adminUpdate(r.id,{admin_checked_at:r.admin_checked_at?null:new Date().toISOString()});}catch(e){alert(friendlyError(e));}reload();};
+   acts.append(ck);
+  }
+  card.append(acts);
+  return card;
+ }
+ function renderList(box,data,admin,reload,emptyText){
+  if(!data.length){box.replaceChildren(el("p","flow-note",emptyText));return;}
+  const nodes=[];
+  if(admin)nodes.push(el("p","flow-note","총 "+data.length+"건 · 미확인 "+data.filter(r=>!r.admin_checked_at&&!r.cancelled_at).length+"건"));
+  data.forEach(r=>nodes.push(buildCard(r,admin,reload)));
+  box.replaceChildren(...nodes);
+ }
+ async function loadHistory(){
+  const box=$("history-list");
+  clearPollers();
+  if(!authClient||!currentSession){box.replaceChildren(el("p","flow-note","카카오 로그인 후 확인할 수 있어요."));return;}
+  box.replaceChildren(el("p","flow-note","기록을 불러오는 중..."));
+  try{
+   const {data,error}=await authClient.from("requests").select(COLS).eq("user_id",currentSession.user.id).order("created_at",{ascending:false}).limit(100);
+   if(error)throw error;
+   renderList(box,data,false,loadHistory,"아직 기록이 없어요. 설치·이전·취소를 신청하면 여기에 쌓여요.");
+  }catch(e){box.replaceChildren(el("p","flow-note",friendlyError(e)));}
+ }
+ async function loadAdmin(){
+  const box=$("admin-list");
+  clearPollers();
+  if(!isAdmin){box.replaceChildren(el("p","flow-note","개발자만 볼 수 있어요."));return;}
+  box.replaceChildren(el("p","flow-note","불러오는 중..."));
+  try{
+   const [rq,bn]=await Promise.all([
+    authClient.from("requests").select(COLS).order("created_at",{ascending:false}).limit(300),
+    authClient.from("bans").select("user_id")
+   ]);
+   if(rq.error)throw rq.error;if(bn.error)throw bn.error;
+   bannedSet=new Set(bn.data.map(x=>x.user_id));
+   renderList(box,rq.data,true,loadAdmin,"아직 들어온 신청이 없어요.");
+  }catch(e){box.replaceChildren(el("p","flow-note",friendlyError(e)));}
+ }
+
+ /* ---------- 신청 전송 ---------- */
+ async function submitRequest(type,body){
+  if(!authClient||!currentSession){openAuth();setAuthMessage("신청하려면 먼저 카카오 로그인을 해주세요.",true);return;}
+  try{
+   if(isBanned){alert("이용이 제한된 계정이라 신청할 수 없어요.");return;}
+   const meta=currentSession.user.user_metadata||{};
+   const nickname=meta.nickname||meta.full_name||meta.name||meta.preferred_username||"";
+   const {data,error}=await authClient.from("requests").insert({
+    type,nickname,
+    room_link:body.roomLink||null,
+    new_room_link:body.newRoomLink||null,
+    profile_link:body.profileLink||null,
+    reason:body.reason||null
+   }).select("id,created_at").single();
+   if(error)throw error;
+   alert("신청이 기록되었습니다.\n접수 시각: "+fmtTime(data.created_at));
+   showFlow("history-flow");loadHistory();
+  }catch(e){alert(friendlyError(e));}
+ }
+ $("submit-btn").addEventListener("click",async()=>{
+  const agreed=$("agree-checkbox").checked;
+  const chat=validChatLink($("kakao-link-input").value);
+  const profile=validProfileLink($("kakao-profile-input").value);
+  if(!agreed){alert("먼저 이용약관에 동의해 주세요.");return;}
+  if(!selectedInstallPlan){alert("영구 설치 또는 정기 결제 설치를 선택해 주세요.");return;}
+  if(!chat||!profile){alert("오픈채팅 링크는 /o/ 형식, 오픈프로필은 /me/ 또는 /o/ 형식으로 입력해 주세요.");return;}
+  await submitRequest(selectedInstallPlan,{roomLink:chat,profileLink:profile});
+ });
+ $("move-submit").addEventListener("click",async()=>{
+  const from=validChatLink($("move-from").value),to=validChatLink($("move-to").value),profile=validProfileLink($("move-profile").value);
+  if(!from||!to||!profile){alert("현재 방, 옮길 방은 /o/ 링크로, 오픈프로필은 /me/ 또는 /o/ 링크로 입력해 주세요.");return;}
+  if(from===to){alert("현재 방과 옮길 방의 링크가 같습니다.");return;}
+  await submitRequest("move",{roomLink:from,newRoomLink:to,profileLink:profile});
+ });
+ $("cancel-submit").addEventListener("click",async()=>{
+  const chat=validChatLink($("cancel-chat").value),profile=validProfileLink($("cancel-profile").value),reason=$("cancel-reason").value.trim();
+  if(!selectedCancelType){alert("정기 결제 취소 또는 봇 설치 취소를 선택해 주세요.");return;}
+  if(!chat||!profile){alert("현재 방 링크와 오픈프로필 링크를 확인해 주세요.");return;}
+  await submitRequest(selectedCancelType,{roomLink:chat,profileLink:profile,reason});
+ });
+
+ $("account-open-btn").onclick=openAuth;
+ $("note-login-btn").addEventListener("click",openAuth);
+ $("history-refresh").addEventListener("click",loadHistory);
+ $("admin-refresh").addEventListener("click",loadAdmin);
+ showMenu();
+ restoreSession();
+})();
+</script>
+</body>
+</html>
